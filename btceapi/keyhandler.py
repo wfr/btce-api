@@ -48,14 +48,14 @@ class KeyHandler(object):
 
     @property
     def keys(self):
-        return self._keys.keys()
+        return list(self._keys.keys())
 
     def getKeys(self):
-        return self._keys.keys()
+        return list(self._keys.keys())
 
     def save(self, filename):
         f = open(filename, "wt")
-        for k, data in self._keys.items():
+        for k, data in list(self._keys.items()):
             f.write("%s\n%s\n%d\n" % (k, data.secret, data.nonce))
 
     def addKey(self, key, secret, next_nonce):

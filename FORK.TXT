@@ -1,0 +1,2 @@
+https://github.com/wfr/btce-api
+	converted to Python 3

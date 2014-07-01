@@ -1,6 +1,6 @@
 # Copyright (c) 2013 Alan McIntyre
 
-import urllib
+import urllib.request, urllib.parse, urllib.error
 import hashlib
 import hmac
 import warnings
@@ -29,18 +29,18 @@ class TradeAccountInfo(object):
     a successful call to TradeAPI.getInfo.'''
 
     def __init__(self, info):
-        funds = info.get(u'funds')
+        funds = info.get('funds')
         for c in common.all_currencies:
-            setattr(self, "balance_%s" % c, funds.get(unicode(c), 0))
+            setattr(self, "balance_%s" % c, funds.get(str(c), 0))
 
-        self.open_orders = info.get(u'open_orders')
-        self.server_time = datetime.fromtimestamp(info.get(u'server_time'))
+        self.open_orders = info.get('open_orders')
+        self.server_time = datetime.fromtimestamp(info.get('server_time'))
 
-        self.transaction_count = info.get(u'transaction_count')
-        rights = info.get(u'rights')
-        self.info_rights = (rights.get(u'info') == 1)
-        self.withdraw_rights = (rights.get(u'withdraw') == 1)
-        self.trade_rights = (rights.get(u'trade') == 1)
+        self.transaction_count = info.get('transaction_count')
+        rights = info.get('rights')
+        self.info_rights = (rights.get('info') == 1)
+        self.withdraw_rights = (rights.get('withdraw') == 1)
+        self.trade_rights = (rights.get('trade') == 1)
 
 
 class TransactionHistoryItem(object):
@@ -87,12 +87,12 @@ class TradeResult(object):
     a successful call to TradeAPI.trade.'''
 
     def __init__(self, info):
-        self.received = info.get(u"received")
-        self.remains = info.get(u"remains")
-        self.order_id = info.get(u"order_id")
-        funds = info.get(u'funds')
+        self.received = info.get("received")
+        self.remains = info.get("remains")
+        self.order_id = info.get("order_id")
+        funds = info.get('funds')
         for c in common.all_currencies:
-            setattr(self, "balance_%s" % c, funds.get(unicode(c), 0))
+            setattr(self, "balance_%s" % c, funds.get(str(c), 0))
 
 
 class CancelOrderResult(object):
@@ -100,10 +100,10 @@ class CancelOrderResult(object):
     a successful call to TradeAPI.cancelOrder.'''
 
     def __init__(self, info):
-        self.order_id = info.get(u"order_id")
-        funds = info.get(u'funds')
+        self.order_id = info.get("order_id")
+        funds = info.get('funds')
         for c in common.all_currencies:
-            setattr(self, "balance_%s" % c, funds.get(unicode(c), 0))
+            setattr(self, "balance_%s" % c, funds.get(str(c), 0))
 
 
 def setHistoryParams(params, from_number, count_number, from_id, end_id,
@@ -140,7 +140,7 @@ class TradeAPI(object):
 
     def _post(self, params, connection=None, raiseIfInvalidNonce=False):
         params["nonce"] = self.handler.getNextNonce(self.key)
-        encoded_params = urllib.urlencode(params)
+        encoded_params = urllib.parse.urlencode(params)
 
         # Hash the params string to produce the Sign header value
         H = hmac.new(self.secret, digestmod=hashlib.sha512)
@@ -153,9 +153,9 @@ class TradeAPI(object):
         headers = {"Key": self.key, "Sign": sign}
         result = connection.makeJSONRequest("/tapi", headers, encoded_params)
 
-        success = result.get(u'success')
+        success = result.get('success')
         if not success:
-            err_message = result.get(u'error')
+            err_message = result.get('error')
             method = params.get("method", "[uknown method]")
 
             if "invalid nonce" in err_message:
@@ -187,10 +187,10 @@ class TradeAPI(object):
             raise Exception("%s call failed with error: %s"
                             % (method, err_message))
 
-        if u'return' not in result:
+        if 'return' not in result:
             raise Exception("Response does not contain a 'return' item.")
 
-        return result.get(u'return')
+        return result.get('return')
 
     def getInfo(self, connection=None):
         params = {"method": "getInfo"}
@@ -207,7 +207,7 @@ class TradeAPI(object):
 
         orders = self._post(params, connection)
         result = []
-        for k, v in orders.items():
+        for k, v in list(orders.items()):
             result.append(TransactionHistoryItem(int(k), v))
 
         # We have to sort items here because the API returns a dict
@@ -249,7 +249,7 @@ class TradeAPI(object):
 
         orders = self._post(params, connection)
         result = []
-        for k, v in orders.items():
+        for k, v in list(orders.items()):
             result.append(OrderItem(k, v))
 
         return result

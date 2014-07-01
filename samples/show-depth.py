@@ -11,17 +11,17 @@ import btceapi
 
 if len(sys.argv) >= 2:
     pair = sys.argv[1]
-    print "Showing depth for %s" % pair
+    print("Showing depth for %s" % pair)
 else:
-    print "No currency pair provided, defaulting to btc_usd"
+    print("No currency pair provided, defaulting to btc_usd")
     pair = "btc_usd"
 
 asks, bids = btceapi.getDepth(pair)
 
-print len(asks), len(bids)
+print(len(asks), len(bids))
 
-ask_prices, ask_volumes = zip(*asks)
-bid_prices, bid_volumes = zip(*bids)
+ask_prices, ask_volumes = list(zip(*asks))
+bid_prices, bid_volumes = list(zip(*bids))
 
 pylab.plot(ask_prices, np.cumsum(ask_volumes), 'r-')
 pylab.plot(bid_prices, np.cumsum(bid_volumes), 'g-')

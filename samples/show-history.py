@@ -9,20 +9,20 @@ import btceapi
 
 if len(sys.argv) >= 2:
     pair = sys.argv[1]
-    print "Showing history for %s" % pair
+    print("Showing history for %s" % pair)
 else:
-    print "No currency pair provided, defaulting to btc_usd"
+    print("No currency pair provided, defaulting to btc_usd")
     pair = "btc_usd"
     
 history = btceapi.getTradeHistory(pair)
 
-print len(history)
+print(len(history))
 
-pylab.plot([t.date for t in history if t.trade_type == u'ask'],
-           [t.price for t in history if t.trade_type == u'ask'], 'ro')
+pylab.plot([t.date for t in history if t.trade_type == 'ask'],
+           [t.price for t in history if t.trade_type == 'ask'], 'ro')
 
-pylab.plot([t.date for t in history if t.trade_type == u'bid'],
-           [t.price for t in history if t.trade_type == u'bid'], 'go')
+pylab.plot([t.date for t in history if t.trade_type == 'bid'],
+           [t.price for t in history if t.trade_type == 'bid'], 'go')
 
 pylab.grid()          
 pylab.show()

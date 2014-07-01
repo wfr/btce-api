@@ -24,9 +24,9 @@ class Chart(object):
 
         self.fig = plt.figure()
         self.axes = self.fig.add_subplot(111)
-        self.bid_line, = self.axes.plot(*zip(*self.bid), \
+        self.bid_line, = self.axes.plot(*list(zip(*self.bid)), \
                 linestyle='None', marker='o', color='red')
-        self.ask_line, = self.axes.plot(*zip(*self.ask), \
+        self.ask_line, = self.axes.plot(*list(zip(*self.ask)), \
                 linestyle='None', marker='o', color='green')
         
         self.fig.canvas.draw()
@@ -41,11 +41,11 @@ class Chart(object):
 
     @property
     def bid(self):
-        return [(t.date, t.price) for t in self.ticks if t.trade_type == u'bid']
+        return [(t.date, t.price) for t in self.ticks if t.trade_type == 'bid']
 
     @property
     def ask(self):
-        return [(t.date, t.price) for t in self.ticks if t.trade_type == u'ask']
+        return [(t.date, t.price) for t in self.ticks if t.trade_type == 'ask']
 
     def update(self, event):
         ticks = btceapi.getTradeHistory(self.symbol)
@@ -53,16 +53,16 @@ class Chart(object):
 
         for t in ticks:
             if t.tid > self.last_tid:
-                print "%s: %s %f at %s %f" % \
-                        (t.trade_type, self.base, t.amount, self.alt, t.price)
+                print("%s: %s %f at %s %f" % \
+                        (t.trade_type, self.base, t.amount, self.alt, t.price))
 
         self.last_tid = max([t.tid for t in ticks])
 
-        x, y = zip(*self.bid)
+        x, y = list(zip(*self.bid))
         self.bid_line.set_xdata(x)
         self.bid_line.set_ydata(y)
 
-        x, y = zip(*self.ask)
+        x, y = list(zip(*self.ask))
         self.ask_line.set_xdata(x)
         self.ask_line.set_ydata(y)
 
