@@ -15,12 +15,12 @@ class TestCommon(unittest.TestCase):
         self.assertEqual(formatCurrencyDigits(1.123456789, 7), "1.1234567")
 
         for i in range(2, 8):
-            print i
+            print(i)
             self.assertEqual(formatCurrencyDigits(1.12, i), "1.12")
             self.assertEqual(formatCurrencyDigits(44.0, i), "44.0")
 
     def test_formatCurrencyByPair(self):
-        for p, d in max_digits.items():
+        for p, d in list(max_digits.items()):
             self.assertEqual(formatCurrency(1.12, p),
                              formatCurrencyDigits(1.12, d))
             self.assertEqual(formatCurrency(44.0, p),
@@ -31,7 +31,7 @@ class TestCommon(unittest.TestCase):
                              truncateAmountDigits(44.0, d))
 
     def test_truncateAmount(self):
-        for p, d in max_digits.items():
+        for p, d in list(max_digits.items()):
             self.assertEqual(truncateAmount(1.12, p),
                              truncateAmountDigits(1.12, d))
             self.assertEqual(truncateAmount(44.0, p),

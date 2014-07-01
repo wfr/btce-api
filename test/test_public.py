@@ -49,13 +49,13 @@ class TestPublic(unittest.TestCase):
                          datetime.datetime(2013, 5, 17, 8, 48, 4, 878004))
 
         # check conversion of unicode dates with no fractional seconds
-        d["date"] = u"2013-05-17 08:48:04"
+        d["date"] = "2013-05-17 08:48:04"
         t = Trade(**d)
         assert type(t.date) is datetime.datetime
         self.assertEqual(t.date, datetime.datetime(2013, 5, 17, 8, 48, 4, 0))
 
         # check conversion of string dates with fractional seconds
-        d["date"] = u"2013-05-17 08:48:04.878004"
+        d["date"] = "2013-05-17 08:48:04.878004"
         t = Trade(**d)
         assert type(t.date) is datetime.datetime
         self.assertEqual(t.date,
